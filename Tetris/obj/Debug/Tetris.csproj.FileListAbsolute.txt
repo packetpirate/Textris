@@ -1,6 +1,0 @@
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\bin\Debug\Tetris.exe.config
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\bin\Debug\Tetris.exe
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\bin\Debug\Tetris.pdb
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\obj\Debug\Tetris.csprojResolveAssemblyReference.cache
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\obj\Debug\Tetris.exe
-c:\users\darin\documents\visual studio 2017\Projects\Tetris\Tetris\obj\Debug\Tetris.pdb

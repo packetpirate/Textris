@@ -7,12 +7,11 @@ namespace Tetris.Utils {
         I, O, T, J, L, S, Z
     }
 
-
-
     class Tetromino {
-        public static ConsoleColor[] Colors = new ConsoleColor[5] { ConsoleColor.Cyan, ConsoleColor.Red,
+        public static ConsoleColor[] Colors = new ConsoleColor[8] { ConsoleColor.Cyan, ConsoleColor.Red,
                                                                     ConsoleColor.Green, ConsoleColor.Yellow,
-                                                                    ConsoleColor.DarkBlue};
+                                                                    ConsoleColor.DarkBlue, ConsoleColor.DarkRed,
+                                                                    ConsoleColor.DarkGreen, ConsoleColor.DarkYellow };
 
         private Shape shape;
         public Shape GetShape => shape;
@@ -148,6 +147,10 @@ namespace Tetris.Utils {
             return false;
         }
 
+        /**
+         * Generate a random Tetromino piece and position it in the center of the top of the board.
+         * @returns A Tetromino object representing the randomly generated Tetromino block.
+         **/ 
         public static Tetromino Random() {
             Random r = new Random();
             Array values = Enum.GetValues(typeof(Shape));
@@ -159,6 +162,7 @@ namespace Tetris.Utils {
             return t;
         }
 
+        // Define the multi-dimensional arrays representing the different rotations of each Tetromino shape.
         public static Dictionary<Shape, List<int[,]>> Rotations = new Dictionary<Shape, List<int[,]>>() {
             { Shape.I, new List<int[,]>(){ new int[,]{ {1},{1},{1},{1} },
                                            new int[,]{ {1,1,1,1} } } },

@@ -36,6 +36,10 @@ namespace Tetris.Utils {
             }
         }
 
+        public void CheckRows() {
+
+        }
+
         /**
          * Prints the game board showing Tetromino blocks as # characters.
          * @param t The current Tetromino. This needs to be drawn as well.
