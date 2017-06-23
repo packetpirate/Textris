@@ -7,9 +7,21 @@ namespace Tetris.Utils {
         I, O, T, J, L, S, Z
     }
 
+
+
     class Tetromino {
+        public static ConsoleColor[] Colors = new ConsoleColor[5] { ConsoleColor.Cyan, ConsoleColor.Red,
+                                                                    ConsoleColor.Green, ConsoleColor.Yellow,
+                                                                    ConsoleColor.DarkBlue};
+
         private Shape shape;
         public Shape GetShape => shape;
+
+        private int color;
+        public int Color => (color + 1);
+        public static ConsoleColor GetColor(int c) {
+            return Tetromino.Colors[c - 1];
+        }
 
         private int rotation;
         public int Rotation {
@@ -57,8 +69,9 @@ namespace Tetris.Utils {
             return false;
         }
 
-        public Tetromino(Shape shape_, int r, int c) {
+        public Tetromino(Shape shape_, int color_, int r, int c) {
             this.shape = shape_;
+            this.color = color_;
             this.rotation = 0;
             this.oR = r;
             this.oC = c;
@@ -66,6 +79,7 @@ namespace Tetris.Utils {
 
         public Tetromino(Tetromino other) {
             this.shape = other.GetShape;
+            this.color = other.Color;
             this.rotation = other.Rotation;
             this.oR = other.OriginRow;
             this.oC = other.OriginCol;
@@ -138,9 +152,10 @@ namespace Tetris.Utils {
             Random r = new Random();
             Array values = Enum.GetValues(typeof(Shape));
             Shape randomShape = (Shape)values.GetValue(r.Next(values.Length));
+            int color = r.Next(Tetromino.Colors.Length);
 
             int width = (Tetromino.Rotations[randomShape])[0].GetLength(1);
-            Tetromino t = new Tetromino(randomShape, 0, ((Board.WIDTH / 2) - (width / 2)));
+            Tetromino t = new Tetromino(randomShape, color, 0, ((Board.WIDTH / 2) - (width / 2)));
             return t;
         }
 

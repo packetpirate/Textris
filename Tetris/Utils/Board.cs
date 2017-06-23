@@ -30,7 +30,7 @@ namespace Tetris.Utils {
                     int tr = r, tc = c;
                     t.GetTransformed(ref tr, ref tc);
                     if(state[r,c] != 0) {
-                        still[tr, tc] = state[r, c];
+                        still[tr, tc] = t.Color;
                     }
                 }
             }
@@ -45,9 +45,12 @@ namespace Tetris.Utils {
             for(int r = 0; r < Board.HEIGHT; r++) {
                 Console.Write("|");
                 for(int c = 0; c < Board.WIDTH; c++) {
+                    int val = GetPlace(r, c);
                     bool currentTetromino = t.IsBlock(r, c);
-                    if(currentTetromino && !landed) Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("{0}", (((GetPlace(r, c) == 0) && !currentTetromino) ? ' ' : '#'));
+                    if(currentTetromino || (val != 0)) {
+                        Console.ForegroundColor = Tetromino.GetColor((currentTetromino)?t.Color:val);
+                    }
+                    Console.Write("{0}", (((val == 0) && !currentTetromino) ? ' ' : '#'));
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 Console.Write("|");
