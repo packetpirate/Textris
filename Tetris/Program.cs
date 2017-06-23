@@ -18,6 +18,7 @@ namespace Tetris {
             bool gameOver = false;
             int ticks = 0;
             bool downKey = false;
+            long score = 0L;
 
             while(!gameOver) {
                 Console.Clear();
@@ -46,9 +47,13 @@ namespace Tetris {
                     landed = current.Move(game.GameBoard, 1, 0);
                 }
 
-                game.GameBoard.PrintBoard(current, landed);
-                if(landed) current = Tetromino.Random();
+                game.GameBoard.PrintBoard(current, landed, score);
+                if(landed) {
+                    current = Tetromino.Random();
+                    game.GameBoard.CheckRows(ref score);
+                }
                 ticks++;
+
                 Thread.Sleep(downKey?20:50);
             }
         }

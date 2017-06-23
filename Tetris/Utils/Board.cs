@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tetris.Utils {
@@ -36,15 +38,49 @@ namespace Tetris.Utils {
             }
         }
 
-        public void CheckRows() {
+        /**
+            * Checks each row to see if they are full, and if so, deletes the row and adds to score.
+            * @param score A long representing the current score, passed as reference, so that it can be modified.
+            **/
+        public void CheckRows(ref long score) {
+            int rowsCleared = 0;
+            for(int r = 0; r < Board.HEIGHT; r++) {
+                bool zero = false;
+                for(int c = 0; c < Board.WIDTH; c++) {
+                    if(still[r, c] == 0) {
+                        zero = true;
+                        break;
+                    }
+                }
 
+                if(!zero) {
+                    rowsCleared++;
+                    DeleteRow(r);
+                }
+            }
+
+            if(rowsCleared > 0) score += (new int[4] { 40, 100, 300, 1200 })[rowsCleared - 1];
+        }
+
+        /**
+         * Deletes row r from the array of landed Tetromino blocks.
+         * @param r The row to delete from the landed array.
+         **/
+        private void DeleteRow(int row) {
+            for(int r = row; r > 0; r--) {
+                for(int c = 0; c < Board.WIDTH; c++) {
+                    // Overwrite the value of this column from the row above.
+                    still[r, c] = still[(r - 1), c];
+                }
+            }
         }
 
         /**
          * Prints the game board showing Tetromino blocks as # characters.
          * @param t The current Tetromino. This needs to be drawn as well.
          **/
-        public void PrintBoard(Tetromino t, bool landed) {
+        public void PrintBoard(Tetromino t, bool landed, long score) {
+            Console.WriteLine("Score: {0}", score);
             Console.WriteLine(String.Concat(Enumerable.Repeat("-", (Board.WIDTH + 2))));
             for(int r = 0; r < Board.HEIGHT; r++) {
                 Console.Write("|");
