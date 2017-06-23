@@ -16,11 +16,14 @@ namespace Tetris.Utils {
             get => rotation;
             set => rotation = value;
         }
-        private void Rotate(int dir) {
+        private void Rotate(Board game, int dir) {
+            int old = rotation;
             rotation = (rotation + dir) % (Tetromino.Rotations[shape].Count);
+            bool collision = Move(game, 0, 0); // to make sure this rotation doesn't collide with anything
+            if(collision) rotation = old;
         }
-        public void RotateCW() { Rotate(1); }
-        public void RotateCCW() { Rotate(-1); }
+        public void RotateCW(Board game) { Rotate(game, 1); }
+        public void RotateCCW(Board game) { Rotate(game, -1); }
 
         public int[,] GetState() {
             return (Tetromino.Rotations[shape])[rotation];
@@ -83,7 +86,8 @@ namespace Tetris.Utils {
          * @param game The board to check the Tetromino against.
          * @param dr The row offset to add to the Tetromino to simulate downward "movement".
          * @param dc The column offset to add to the Tetromino to simulate left and right "movement".
-         * @returns A bool representing whether or not this Tetromino should land.
+         * @returns A bool representing whether or not this Tetromino should land, or if checking a rotated piece,
+         *          returns true if a collision is detected from the rotated piece.
          **/
         public bool Move(Board game, int dr, int dc) {
             Tetromino next = new Tetromino(this);
@@ -100,17 +104,21 @@ namespace Tetris.Utils {
                             if(state[ir, ic] != 0) {
                                 int tr = ir, tc = ic;
                                 next.GetTransformed(ref tr, ref tc);
-                                // Check if Tetromino is touching bottom.
-                                if(tr >= Board.HEIGHT) {
-                                    Console.WriteLine("Out of bounds on bottom!");
+                                // Various conditions that determine if the Tetromino should "land".
+                                // TODO: add case for checking collisions with rotations
+                                if((dc != 0) && (game.GetPlace(r, c) != 0) && (tr == r) && (tc == c)) {
+                                    // Do we have a horizontal collision between pieces?
+                                    return false;
+                                } else if(tr >= Board.HEIGHT) {
+                                    // Check if the Tetromino is touching the bottom.
                                     game.AddPiece(this);
                                     return true;
                                 } else if(tc < 0) {
                                     // Make sure we don't move off the left of the board.
-                                    return false;
+                                    return ((dr == 0) && (dc == 0)); // checks to see if this is a rotation check
                                 } else if(tc >= Board.WIDTH) {
                                     // Make sure we don't move off the right of the board.
-                                    return false;
+                                    return ((dr == 0) && (dc == 0)); // checks to see if this is a rotation check
                                 } else if((game.GetPlace(r, c) != 0) && (tr == r) && (tc == c)) {
                                     // Is there already a block here? If so, land.
                                     game.AddPiece(this);
