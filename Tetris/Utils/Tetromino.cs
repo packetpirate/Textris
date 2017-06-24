@@ -7,15 +7,15 @@ namespace Tetris.Utils {
     }
 
     class Tetromino {
-        public static ConsoleColor[] Colors = new ConsoleColor[8] { ConsoleColor.Cyan, ConsoleColor.Red,
-                                                                    ConsoleColor.Green, ConsoleColor.Yellow,
-                                                                    ConsoleColor.DarkBlue, ConsoleColor.DarkRed,
-                                                                    ConsoleColor.DarkGreen, ConsoleColor.DarkYellow };
+        public static ConsoleColor[] Colors = new ConsoleColor[] { ConsoleColor.Cyan, ConsoleColor.Red,
+                                                                   ConsoleColor.Green, ConsoleColor.Yellow,
+                                                                   ConsoleColor.DarkBlue, ConsoleColor.DarkRed,
+                                                                   ConsoleColor.DarkGreen, ConsoleColor.DarkYellow };
 
-        private Shape shape;
+        private readonly Shape shape;
         public Shape GetShape => shape;
 
-        private int color;
+        private readonly int color;
         public int Color => (color + 1);
         public static ConsoleColor GetColor(int c) {
             return Tetromino.Colors[c - 1];
@@ -116,11 +116,16 @@ namespace Tetris.Utils {
                             if(state[ir, ic] != 0) {
                                 int tr = ir, tc = ic;
                                 next.GetTransformed(ref tr, ref tc);
+                                bool sameBlock = ((game.GetPlace(r, c) != 0) && (tr == r) && (tc == c));
                                 // Various conditions that determine if the Tetromino should "land".
-                                // TODO: add case for checking collisions with rotations
-                                if((dc != 0) && (game.GetPlace(r, c) != 0) && (tr == r) && (tc == c)) {
+                                if(sameBlock) {
                                     // Do we have a horizontal collision between pieces?
-                                    return false;
+                                    if(dc != 0) return false;
+                                    else {
+                                        // Is there already a block here? If so, land.
+                                        game.AddPiece(this);
+                                        return true;
+                                    }
                                 } else if(tr >= Board.HEIGHT) {
                                     // Check if the Tetromino is touching the bottom.
                                     game.AddPiece(this);
@@ -131,10 +136,6 @@ namespace Tetris.Utils {
                                 } else if(tc >= Board.WIDTH) {
                                     // Make sure we don't move off the right of the board.
                                     return ((dr == 0) && (dc == 0)); // checks to see if this is a rotation check
-                                } else if((game.GetPlace(r, c) != 0) && (tr == r) && (tc == c)) {
-                                    // Is there already a block here? If so, land.
-                                    game.AddPiece(this);
-                                    return true;
                                 }
                             }
                         }
@@ -154,15 +155,15 @@ namespace Tetris.Utils {
             Random r = new Random();
             Array values = Enum.GetValues(typeof(Shape));
             Shape randomShape = (Shape)values.GetValue(r.Next(values.Length));
-            int color = r.Next(Tetromino.Colors.Length);
+            int randomColor = r.Next(Tetromino.Colors.Length);
 
             int width = (Tetromino.Rotations[randomShape])[0].GetLength(1);
-            Tetromino t = new Tetromino(randomShape, color, 0, ((Board.WIDTH / 2) - (width / 2)));
+            Tetromino t = new Tetromino(randomShape, randomColor, 0, ((Board.WIDTH / 2) - (width / 2)));
             return t;
         }
 
         // Define the multi-dimensional arrays representing the different rotations of each Tetromino shape.
-        public static Dictionary<Shape, List<int[,]>> Rotations = new Dictionary<Shape, List<int[,]>>() {
+        public static readonly Dictionary<Shape, List<int[,]>> Rotations = new Dictionary<Shape, List<int[,]>>() {
             { Shape.I, new List<int[,]>(){ new int[,]{ {1},{1},{1},{1} },
                                            new int[,]{ {1,1,1,1} } } },
             { Shape.O, new List<int[,]>(){ new int[,]{ {1,1}, {1,1} } } },

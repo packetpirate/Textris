@@ -24,6 +24,10 @@ namespace Tetris.Utils {
             still = new int[Board.HEIGHT, Board.WIDTH];
         }
 
+        /**
+         * Adds the given Tetromino to the grid of "landed" Tetromino blocks.
+         * @param t The Tetromino to "land" on the grid.
+         **/
         public void AddPiece(Tetromino t) {
             int[,] state = t.GetState();
 
@@ -59,7 +63,7 @@ namespace Tetris.Utils {
                 }
             }
 
-            if(rowsCleared > 0) score += (new int[4] { 40, 100, 300, 1200 })[rowsCleared - 1];
+            if(rowsCleared > 0) score += (new int[] { 40, 100, 300, 1200 })[rowsCleared - 1];
         }
 
         /**
